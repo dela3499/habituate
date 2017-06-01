@@ -84,7 +84,11 @@ function viewSection(sectionModel) {
 			]
 		)]
 	
+	var allComplete = true
+
 	var rows = [0,1,2,3,4,5,6,7,8,9].map(function (habitID) {
+		allComplete = allComplete & habit['currentPeriod']
+
 		var habit = sectionModel['habits'][habitID]
 		var warning = habit['currentPeriod'] == "incomplete" & habit['previousPeriod'] == "incomplete"
 		var warningText = warning ? "!" : ""
@@ -98,8 +102,10 @@ function viewSection(sectionModel) {
 
 	})
 
+	var allCompleteClass = allComplete ? "all-complete" : ""
+
 	return m('div', 
-		{class: "section"},
+		{class: join(["section", allCompleteClass])},
 		[ m('table', header.concat(rows)) ]
 	)
 }

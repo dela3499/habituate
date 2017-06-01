@@ -128,41 +128,97 @@
 				  m('th',"")
 				]
 			)]
+
+		var allComplete = true			
 		
 		var rows = [0,1,2,3,4,5,6,7,8,9].map(function (habitID) {
+			
 			var habit = sectionModel['habits'][habitID]
+			allComplete = allComplete & (habit['currentPeriod'] == 'complete')
 			var warning = habit['currentPeriod'] == "incomplete" & habit['previousPeriod'] == "incomplete"
-			var warningText = warning ? m("i", {class: "fa fa-bolt blink-me"}) : ""
+			var smallCongrats = habit['currentPeriod'] == "complete"
+			var largeCongrats = habit['currentPeriod'] == "complete" & habit['previousPeriod'] == "incomplete"
+		
+			var currentText = ""
+			var hoverText = ""
 
+			if (warning){
+				currentText = m("i", {class: "fa fa-warning big"})
+				hoverText = "Don't skip two days in a row. Make the habit easier if you need, but make sure to do it."
+			} else if (largeCongrats) {
+				currentText = m("i", {class: "fa fa-thumbs-up big"})
+				hoverText = "Nice! You skipped yesterday, but now you're back on the horse. :)"
+			} else if (smallCongrats) {
+				currentText = m("i", {class: "fa fa-thumbs-up"})
+			}
 
 			var previousPeriodClasses = join(['previousPeriod', habit['previousPeriod']])
 			var currentPeriodClasses = join(['currentPeriod', habit['currentPeriod']])
 			var labelClasses = join(['habit-title', habit['currentPeriod']])
 
+			function togglePrevious() {
+				update({
+					action: 'toggleComplete', 
+					habitType: 'daily', 
+					habitID: habitID,
+					period: 'previousPeriod'})
+			}
+
+			function toggleCurrent() {
+				update({
+					action: 'toggleComplete', 
+					habitType: 'daily', 
+					habitID: habitID,
+					period: 'currentPeriod'})
+			}			
+
 			return m("tr",
-				[ m('td', {class: previousPeriodClasses}, ""),
-			      m('td', {class: currentPeriodClasses}, warningText),
+				[ m('td', {class: previousPeriodClasses, onclick: togglePrevious}, ""),
+			      m('td', {class: currentPeriodClasses, onclick: toggleCurrent, title: hoverText}, currentText),
 			      m('td', {class: labelClasses}, habit['title']),
 				])
 
 		})
 
+		var allCompleteClass = allComplete ? "all-complete" : ""
+
 		return m('div', 
-			{class: "section"},
+			{class: join(["section", allCompleteClass])},
 			[ m('table', header.concat(rows)) ]
 		)
 	}
 
+
+	function toggle(x) {
+		if (x == "complete") {
+			return "incomplete"
+		} else {
+			return "complete"
+		}
+	}
+
+	function update(action) {
+		if (action['action'] == 'toggleComplete') {
+			habitType = action['habitType']
+			habitID = action['habitID']
+			period = action['period']
+			viewModel[habitType]['habits'][habitID][period] = toggle(viewModel[habitType]['habits'][habitID][period])
+		}
+		render()
+	}
+
+
 	var root = document.getElementById("all-habits")
 	// var model = JSON.parse(localStorage.getItem('habituate'))
-	var model = defaultViewModel['daily']
-	m.render(root, viewSection(model))
+	var viewModel = defaultViewModel
+	m.render(root, viewSection(viewModel['daily']))
 
-	// function render() {
-	// 	var root = document.getElementById("all-habits")
-	// 	var model = JSON.parse(localStorage.getItem('habituate'))
-	// 	m.render(root, view(model))
-	// }
+	function render() {
+		var root = document.getElementById("all-habits")
+		// var model = JSON.parse(localStorage.getItem('habituate'))
+		var model = viewModel
+		m.render(root, viewSection(model['daily']))
+	}
 
 	// render()
 

@@ -92,6 +92,7 @@ td, th {
 	color: white;*/
 	text-align: center;
 	/*box-sizing: border-box;*/
+
 }
 
 th {
@@ -99,8 +100,12 @@ th {
 }
 
 .currentPeriod {
-	color: #a9cada;
-	font-size: 25px;
+	color: #9dc78d;
+	font-size: 20px;
+}
+
+.big {
+	font-size: 25px !important;
 }
 
 .habit-title {
@@ -113,25 +118,38 @@ th {
 }
 
 .complete.previousPeriod, .complete.currentPeriod {
-	background: #a9cada;
+	background: #9dc78d;
 }
 
 .incomplete.currentPeriod {
 	background: rgba(255,255,255,0.6);
-	/*border: 1px solid #a9cada;*/
+	/*border: 1px solid #9dc78d;*/
 }
 
 .incomplete.previousPeriod {
-	background: none;
+	background: rgba(255,255,255,0.6);
 }
 
-.currentPeriod, .previousPeriod {
-	transition: background-color 0.3s;
+.incomplete, .complete {
+	cursor: pointer;
 }
 
 .currentPeriod:hover, .previousPeriod:hover {
-	transition: background-color 0.3s;
-	background-color: grey;
+	opacity: 0.4;
+	color: black;
+}
+
+.complete.currentPeriod {
+	color: rgba(255,255,255,1);
+}
+
+
+.incomplete.previousPeriod:hover, .incomplete.currentPeriod:hover {
+	background: rgba(0,0,0,0.2);
+}
+
+.complete.habit-title {
+	opacity: 0.2;
 }
 
 th {
@@ -141,16 +159,9 @@ th {
 .section { 
 	margin-top: 50px;
 }
-/*th:nth-of-type(2)
-	margin-left: 5px;
-}*/
 
-.blink-me {
-  animation: blinker 2s linear infinite;
-}
-
-@keyframes blinker {  
-  50% { opacity: 0.2; }
+.all-complete .currentPeriod {
+	background: #3b69dc;
 }
 
 @media (max-width: 1050px) {
