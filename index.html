@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Habits</title>
+	<script src="mithril.js"></script>
+	<link rel="stylesheet" type="text/css" href="app.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+	<link 
+	rel="stylesheet" 
+	type="text/css" 
+	href="font-awesome.min.css">
+</head>
+
+<body>
+	<div id='container'>
+		<div id="header">
+			<div class="title">Habituate</div>
+			<div class="item">build new habits</div>
+			<div class="item small">
+				made by <a target="_blank" href="https://twitter.com/dela3499">@dela3499</a> 
+				/ fork on <a target="_blank" href="https://github.com/dela3499/habituate">GitHub</a></div>
+		</div>
+		<div id="all-habits">
+		</div>	
+	</div>
+</body>
+
+<script>
+
+	// localStorage.clear('habituate')
+
+	// Initialize localStorage
+	
+
+	// var local = localStorage.getItem('habituate')
+
+	// if (!local) {
+	// 	console.log("just set default");
+	// 	localStorage.setItem('habituate', JSON.stringify(defaultModel));
+	// }
+	
+	// Initialize UI
+
+
+
+	defaultViewModel = {
+		"daily": {
+			"currentPeriodTitle": "Th 6/1",
+			"previousPeriodTitle": "W 5/31",
+			"habits": {
+				0: {
+					"id": 0,
+					"title": "start walking by 6am",
+					"currentPeriod": "complete",
+					"previousPeriod": "complete"
+				},
+				1: {
+					"id": 1,
+					"title": "meditate 10m",
+					"currentPeriod": "complete",
+					"previousPeriod": "complete"
+				},
+				2: {
+					"id": 2,
+					"title": "business ideas 10m",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				},
+				3: {
+					"id": 3,
+					"title": "read 10m",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				},
+				4: {
+					"id": 4,
+					"title": "ship new product",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				},
+				5: {
+					"id": 5,
+					"title": "newsletter",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				},
+				6: {
+					"id": 6,
+					"title": "workout/stretch 10m",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				},
+				7: {
+					"id": 7,
+					"title": "todos 10m",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				},
+				8: {
+					"id": 8,
+					"title": "ship bioage",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "incomplete"
+				},
+				9: {
+					"id": 9,
+					"title": "in bed by 11pm",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete"
+				}
+			}
+		}
+	}
+
+	function join(strings) {
+		result = ""
+		for (var i = strings.length - 1; i >= 0; i--) {
+			result = result + strings[i] + " "
+		}
+		return result
+	}
+
+	function viewSection(sectionModel) {
+		var header = [ 
+			m('tr', 
+				[ m('th', sectionModel['previousPeriodTitle']), 
+				  m('th', sectionModel['currentPeriodTitle']),
+				  m('th',"")
+				]
+			)]
+		
+		var rows = [0,1,2,3,4,5,6,7,8,9].map(function (habitID) {
+			var habit = sectionModel['habits'][habitID]
+			var warning = habit['currentPeriod'] == "incomplete" & habit['previousPeriod'] == "incomplete"
+			var warningText = warning ? m("i", {class: "fa fa-bolt blink-me"}) : ""
+
+
+			var previousPeriodClasses = join(['previousPeriod', habit['previousPeriod']])
+			var currentPeriodClasses = join(['currentPeriod', habit['currentPeriod']])
+			var labelClasses = join(['habit-title', habit['currentPeriod']])
+
+			return m("tr",
+				[ m('td', {class: previousPeriodClasses}, ""),
+			      m('td', {class: currentPeriodClasses}, warningText),
+			      m('td', {class: labelClasses}, habit['title']),
+				])
+
+		})
+
+		return m('div', 
+			{class: "section"},
+			[ m('table', header.concat(rows)) ]
+		)
+	}
+
+	var root = document.getElementById("all-habits")
+	// var model = JSON.parse(localStorage.getItem('habituate'))
+	var model = defaultViewModel['daily']
+	m.render(root, viewSection(model))
+
+	// function render() {
+	// 	var root = document.getElementById("all-habits")
+	// 	var model = JSON.parse(localStorage.getItem('habituate'))
+	// 	m.render(root, view(model))
+	// }
+
+	// render()
+
+
+
+</script>
+
+</html>
