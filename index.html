@@ -27,24 +27,10 @@
 
 <script>
 
-	// localStorage.clear('habituate')
-
-	// Initialize localStorage
-	
-
-	// var local = localStorage.getItem('habituate')
-
-	// if (!local) {
-	// 	console.log("just set default");
-	// 	localStorage.setItem('habituate', JSON.stringify(defaultModel));
-	// }
-	
-	// Initialize UI
-
-
-
 	defaultViewModel = {
+		"currentSection": "daily",
 		"daily": {
+			"habitType": "daily",
 			"currentPeriodTitle": "Th 6/1",
 			"currentPeriod": "",
 			"previousPeriodTitle": "W 5/31",
@@ -121,7 +107,165 @@
 					"periods": {}
 				}
 			}
-		}
+		},
+		"weekly": {
+			"habitType": "weekly",
+			"currentPeriodTitle": "",
+			"currentPeriod": "",
+			"previousPeriodTitle": "",
+			"previousPeriod": "",
+			"habits": {
+				0: {
+					"id": 0,
+					"title": "",
+					"currentPeriod": "complete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				1: {
+					"id": 1,
+					"title": "",
+					"currentPeriod": "complete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				2: {
+					"id": 2,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				3: {
+					"id": 3,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				4: {
+					"id": 4,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				5: {
+					"id": 5,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				6: {
+					"id": 6,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				7: {
+					"id": 7,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				8: {
+					"id": 8,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "incomplete",
+					"periods": {}
+				},
+				9: {
+					"id": 9,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				}
+			}
+		},
+		"monthly": {
+			"habitType": "monthly",
+			"currentPeriodTitle": "",
+			"currentPeriod": "",
+			"previousPeriodTitle": "",
+			"previousPeriod": "",
+			"habits": {
+				0: {
+					"id": 0,
+					"title": "",
+					"currentPeriod": "complete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				1: {
+					"id": 1,
+					"title": "",
+					"currentPeriod": "complete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				2: {
+					"id": 2,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				3: {
+					"id": 3,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				4: {
+					"id": 4,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				5: {
+					"id": 5,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				6: {
+					"id": 6,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				7: {
+					"id": 7,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				},
+				8: {
+					"id": 8,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "incomplete",
+					"periods": {}
+				},
+				9: {
+					"id": 9,
+					"title": "",
+					"currentPeriod": "incomplete",
+					"previousPeriod": "complete",
+					"periods": {}
+				}
+			}
+		}		
 	}
 
 	function join(strings) {
@@ -132,7 +276,9 @@
 		return result
 	}
 
-	function viewSection(sectionModel) {
+	function view(model) {
+		var currentSection = model['currentSection']
+		var sectionModel = model[currentSection]
 		var header = [ 
 			m('tr', 
 				[ m('th', sectionModel['previousPeriodTitle']), 
@@ -143,6 +289,8 @@
 
 		var allComplete = true			
 		
+		habitType = sectionModel['habitType']
+
 		var rows = [0,1,2,3,4,5,6,7,8,9].map(function (habitID) {
 			
 			var habit = sectionModel['habits'][habitID]
@@ -172,7 +320,7 @@
 			function togglePrevious() {
 				update({
 					action: 'toggleComplete', 
-					habitType: 'daily', 
+					habitType: habitType, 
 					habitID: habitID,
 					period: 'previousPeriod'})
 			}
@@ -180,7 +328,7 @@
 			function toggleCurrent() {
 				update({
 					action: 'toggleComplete', 
-					habitType: 'daily', 
+					habitType: habitType, 
 					habitID: habitID,
 					period: 'currentPeriod'})
 			}
@@ -188,7 +336,7 @@
 			function updateHabitTitle(input) {
 				update({
 					action: "setHabitTitle",
-					habitType: 'daily',
+					habitType: habitType,
 					habitID: habitID,
 					text: input.target.value
 				})
@@ -206,10 +354,39 @@
 
 		var allCompleteClass = allComplete ? "all-complete" : ""
 
-		return m('div', 
-			{class: join(["section", allCompleteClass])},
-			[ m('table', header.concat(rows)) ]
-		)
+		function setDaily() {
+			update({action: 'setSection', section: 'daily'})
+		}
+
+		function setWeekly() {
+			update({action: 'setSection', section: 'weekly'})
+		}
+
+		function setMonthly() {
+			update({action: 'setSection', section: 'monthly'})
+		}		
+
+		dailyActive = 'daily' == currentSection ? "active" : ""
+		weeklyActive = 'weekly' == currentSection ? "active" : ""
+		monthlyActive = 'monthly' == currentSection ? "active" : ""
+
+
+		var sectionLinks = m('div', {id: 'section-links'},[
+			m('span', {onclick: setDaily, class: dailyActive}, 'Daily'),
+			m('span',"/"),
+			m('span', {onclick: setWeekly, class: weeklyActive}, 'Weekly'),
+			m('span',"/"),
+			m('span', {onclick: setMonthly, class: monthlyActive}, 'Monthly')
+			])
+
+
+		return m('div', [
+				sectionLinks,
+				m('div', 
+					{class: join(["section", allCompleteClass])},
+					m('table', header.concat(rows))
+					)]
+				)
 	}
 
 	function toggle(x) {
@@ -238,22 +415,38 @@
 			habitID = action['habitID']
 			text = action['text']
 			viewModel[habitType]['habits'][habitID]['title'] = text
+		} else if (action['action'] == 'setSection') {
+			viewModel['currentSection'] = action['section']
 		}
+
+
 		localStorage.setItem('habituate', JSON.stringify(viewModel));
 		render()
+		// console.log(viewModel)
 	}
 
-	function shiftDate(date, nDays) {
+	function shiftDate(dateInput, nDays) {
+		var date = new Date(dateInput)
 		return new Date(date.setDate(date.getDate() + nDays))
 	}
+	
+	function shiftMonth(dateInput, nMonths) {
+		var date = new Date(dateInput)
+		return new Date(date.setMonth(date.getMonth() + nMonths))
+	}	
 
-	function getDayString(dateString) {
+	function getPeriodString(section, dateString) {
 		date = new Date(dateString)
 		dayOfWeek = ['Sun','Mon','Tues','Wed','Th','Fri','Sat'][date.getDay()]
 		month = date.getMonth() + 1
 		dayOfMonth = date.getDate()
+		monthNames = ['Jan','Feb','Mar','Apr', 'May','June','July','Aug','Sep','Oct','Nov', 'Dec']
 
-		return dayOfWeek + " " + month.toString() + "/" + dayOfMonth.toString()
+		if (section == "daily" || section == "weekly") {
+			return dayOfWeek + " " + month.toString() + "/" + dayOfMonth.toString()
+		} else if (section == 'monthly') {
+			return monthNames[date.getMonth()]
+		}
 	}
 
 	function init() {
@@ -262,35 +455,57 @@
 		if (!model) {
 			console.log("setting default model")
 			model = defaultViewModel
-			// localStorage.setItem('habituate', JSON.stringify(defaultViewModel));
 		}
 
+		// check if today & yesterday are present in daily habits
+		function initHabitSection(section, previousPeriodDateString, currentPeriodDateString) {
+			var dummy = [0,1,2,3,4,5,6,7,8,9].map(function(habitID) {
+				currentPeriodHabitStatus = model[section]['habits'][habitID]['periods'][currentPeriodDateString]
+				previousPeriodHabitStatus = model[section]['habits'][habitID]['periods'][previousPeriodDateString]
+				if (!currentPeriodHabitStatus) {
+					model[section]['habits'][habitID]['periods'][currentPeriodDateString] = "incomplete"
+				}
+				if (!previousPeriodHabitStatus) {
+					model[section]['habits'][habitID]['periods'][previousPeriodDateString] = "complete"
+				}
+				model[section]['habits'][habitID]["previousPeriod"] = model[section]['habits'][habitID]['periods'][previousPeriodDateString]
+				model[section]['habits'][habitID]["currentPeriod"] = model[section]['habits'][habitID]['periods'][currentPeriodDateString]
+				
+				model[section]['currentPeriod'] = currentPeriodDateString
+				model[section]['previousPeriod'] = previousPeriodDateString
+
+				model[section]['currentPeriodTitle'] = getPeriodString(section, currentPeriodDateString)
+				model[section]['previousPeriodTitle'] = getPeriodString(section, previousPeriodDateString)
+			})			
+		}
+
+		// daily stuff
 		var todayDate = shiftDate(new Date(), 0)
 		var today = todayDate.toDateString()
 		var yesterdayDate = shiftDate(todayDate, -1)
 		var yesterday = yesterdayDate.toDateString()
+		
+		initHabitSection('daily', yesterday, today)
+		
+		// weekly stuff
+		var lastMondayDate = shiftDate(todayDate, -(todayDate.getDay()+6) % 7)
+		var beforeLastMondayDate = shiftDate(lastMondayDate, -7)
+		
+		var lastMonday = lastMondayDate.toDateString()
+		var beforeLastMonday = beforeLastMondayDate.toDateString()		
 
-		// check if today & yesterday are present in daily habits
-		var dummy = [0,1,2,3,4,5,6,7,8,9].map(function(habitID) {
+		initHabitSection('weekly', beforeLastMonday, lastMonday)
 
-			todaysHabitStatus = model['daily']['habits'][habitID]['periods'][today]
-			// console.log(todaysHabitStatus)
-			yesterdaysHabitStatus = model['daily']['habits'][habitID]['periods'][yesterday]
-			if (!todaysHabitStatus) {
-				model['daily']['habits'][habitID]['periods'][today] = "incomplete"
-			}
-			if (!yesterdaysHabitStatus) {
-				model['daily']['habits'][habitID]['periods'][yesterday] = "complete"
-			}
-			model['daily']['habits'][habitID]["previousPeriod"] = model['daily']['habits'][habitID]['periods'][yesterday]
-			model['daily']['habits'][habitID]["currentPeriod"] = model['daily']['habits'][habitID]['periods'][today]
-			
-			model['daily']['currentPeriod'] = today
-			model['daily']['previousPeriod'] = yesterday
+		// monthly stuff
+		var firstOfThisMonthDate = new Date(today) //initialize
+		firstOfThisMonthDate.setDate(1) // actually first of month now
+		firstOfThisMonth = firstOfThisMonthDate.toDateString()
 
-			model['daily']['currentPeriodTitle'] = getDayString(today)
-			model['daily']['previousPeriodTitle'] = getDayString(yesterday)
-		})
+		var firstOfLastMonthDate = new Date(firstOfThisMonthDate)
+		firstOfLastMonthDate = shiftMonth(firstOfLastMonthDate, -1)
+		firstOfLastMonth = firstOfLastMonthDate.toDateString()
+
+		initHabitSection('monthly', firstOfLastMonth, firstOfThisMonth)
 
 		localStorage.setItem('habituate', JSON.stringify(model));
 	}
@@ -300,7 +515,7 @@
 	function render() {
 		var root = document.getElementById("all-habits")
 		var model = JSON.parse(localStorage.getItem('habituate'))
-		m.render(root, viewSection(model['daily']))
+		m.render(root, view(model))
 	}
 
 	init()

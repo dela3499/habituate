@@ -50,4 +50,12 @@ type Msg
   anyway... That's cool. I'm excited! I'll keep everything in memory for now, and just use those messages too. Okay. 
   When you call 'update', a render call can be there too. And a global definition of the model. 
 
+  So, the next thing to figure out is the format of the model. 
+
 -}
+
+type alias ModelHabit = 
+  { title: 
+  , id: 
+  , periods: Dict String String
+  }
