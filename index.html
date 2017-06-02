@@ -455,6 +455,22 @@
 		if (!model) {
 			console.log("setting default model")
 			model = defaultViewModel
+		} 
+
+		if (model["currentSection"] == null) { // migrate to new model
+			model["currentSection"] = "daily"
+		}
+		
+		if (model["daily"]['habitType'] == null) {
+			model["daily"]['habitType'] = 'daily'
+		}
+
+		if (model["weekly"] == null) { // migrate to new model
+			model['weekly'] = defaultViewModel['weekly']
+		}
+
+		if (model["monthly"] == null) { // migrate to new model
+			model['monthly'] = defaultViewModel['monthly']
 		}
 
 		// check if today & yesterday are present in daily habits
