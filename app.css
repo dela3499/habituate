@@ -164,7 +164,7 @@ th {
 	color: rgba(0,0,0,0.6);
 }
 
-.complete.habit-title {
+.complete.habit-title, .inactive.habit-title {
 	opacity: 0.2;
 }
 
@@ -180,7 +180,7 @@ th {
 	background: #3b69dc;
 }
 
-.inactive {
+.inactive.previousPeriod, .inactive.currentPeriod {
 	background: white !important;
 }
 

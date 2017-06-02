@@ -348,7 +348,7 @@
 				return m("tr",
 					[ m('td', {class: previousPeriodClasses, title: ""}, ""),
 				      m('td', {class: currentPeriodClasses}, ""),
-				      m('td', {class: labelClasses}, 
+				      m('td', {class: labelClasses + " inactive"}, 
 				      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
 				      	),
 					])				
