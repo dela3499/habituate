@@ -52,70 +52,70 @@
 			"habits": {
 				0: {
 					"id": 0,
-					"title": "start walking by 6am",
+					"title": "",
 					"currentPeriod": "complete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				1: {
 					"id": 1,
-					"title": "meditate 10m",
+					"title": "",
 					"currentPeriod": "complete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				2: {
 					"id": 2,
-					"title": "business ideas 10m",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				3: {
 					"id": 3,
-					"title": "read 10m",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				4: {
 					"id": 4,
-					"title": "ship new product",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				5: {
 					"id": 5,
-					"title": "newsletter",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				6: {
 					"id": 6,
-					"title": "workout/stretch 10m",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				7: {
 					"id": 7,
-					"title": "todos 10m",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
 				},
 				8: {
 					"id": 8,
-					"title": "ship bioage",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "incomplete",
 					"periods": {}
 				},
 				9: {
 					"id": 9,
-					"title": "in bed by 11pm",
+					"title": "",
 					"currentPeriod": "incomplete",
 					"previousPeriod": "complete",
 					"periods": {}
@@ -164,8 +164,9 @@
 				currentText = m("i", {class: "fa fa-thumbs-up"})
 			}
 
-			var previousPeriodClasses = join(['previousPeriod', habit['previousPeriod']])
-			var currentPeriodClasses = join(['currentPeriod', habit['currentPeriod']])
+			var inactiveClass = (habit['title'] == "") ? "inactive" : ""
+			var previousPeriodClasses = join(['previousPeriod', habit['previousPeriod'], inactiveClass])
+			var currentPeriodClasses = join(['currentPeriod', habit['currentPeriod'], inactiveClass])
 			var labelClasses = join(['habit-title', habit['currentPeriod']])
 
 			function togglePrevious() {
@@ -243,12 +244,12 @@
 	}
 
 	function shiftDate(date, nDays) {
-		return new Date(new Date().setDate(date.getDate() + nDays))
+		return new Date(date.setDate(date.getDate() + nDays))
 	}
 
 	function getDayString(dateString) {
 		date = new Date(dateString)
-		dayOfWeek = ['Su','M','Tu','W','Th','F','Sa'][date.getDay()]
+		dayOfWeek = ['Sun','Mon','Tues','Wed','Th','Fri','Sat'][date.getDay()]
 		month = date.getMonth() + 1
 		dayOfMonth = date.getDate()
 
@@ -264,7 +265,7 @@
 			// localStorage.setItem('habituate', JSON.stringify(defaultViewModel));
 		}
 
-		var todayDate = shiftDate(new Date(), 10)
+		var todayDate = shiftDate(new Date(), 0)
 		var today = todayDate.toDateString()
 		var yesterdayDate = shiftDate(todayDate, -1)
 		var yesterday = yesterdayDate.toDateString()
@@ -273,7 +274,7 @@
 		var dummy = [0,1,2,3,4,5,6,7,8,9].map(function(habitID) {
 
 			todaysHabitStatus = model['daily']['habits'][habitID]['periods'][today]
-			console.log(todaysHabitStatus)
+			// console.log(todaysHabitStatus)
 			yesterdaysHabitStatus = model['daily']['habits'][habitID]['periods'][yesterday]
 			if (!todaysHabitStatus) {
 				model['daily']['habits'][habitID]['periods'][today] = "incomplete"
@@ -294,7 +295,7 @@
 		localStorage.setItem('habituate', JSON.stringify(model));
 	}
 
-	// localStorage.clear('habituate')
+	localStorage.clear('habituate')
 
 	function render() {
 		var root = document.getElementById("all-habits")

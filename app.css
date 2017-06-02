@@ -166,6 +166,10 @@ th {
 	background: #3b69dc;
 }
 
+.inactive {
+	background: white !important;
+}
+
 @media (max-width: 1050px) {
     #container {
     	margin-left: 50px;
