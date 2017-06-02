@@ -294,7 +294,7 @@
 		var rows = [0,1,2,3,4,5,6,7,8,9].map(function (habitID) {
 			
 			var habit = sectionModel['habits'][habitID]
-			allComplete = allComplete & (habit['currentPeriod'] == 'complete')
+			
 			var warning = habit['currentPeriod'] == "incomplete" & habit['previousPeriod'] == "incomplete"
 			var smallCongrats = habit['currentPeriod'] == "complete"
 			var largeCongrats = habit['currentPeriod'] == "complete" & habit['previousPeriod'] == "incomplete"
@@ -312,7 +312,8 @@
 				currentText = m("i", {class: "fa fa-thumbs-up"})
 			}
 
-			var inactiveClass = (habit['title'] == "") ? "inactive" : ""
+			var inactive = habit['title'] == ""
+			var inactiveClass = inactive ? "inactive" : ""
 			var previousPeriodClasses = join(['previousPeriod', habit['previousPeriod'], inactiveClass])
 			var currentPeriodClasses = join(['currentPeriod', habit['currentPeriod'], inactiveClass])
 			var labelClasses = join(['habit-title', habit['currentPeriod']])
@@ -342,13 +343,29 @@
 				})
 			}
 
-			return m("tr",
-				[ m('td', {class: previousPeriodClasses, onclick: togglePrevious}, ""),
-			      m('td', {class: currentPeriodClasses, onclick: toggleCurrent, title: hoverText}, currentText),
-			      m('td', {class: labelClasses}, 
-			      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
-			      	),
-				])
+			if (inactive) {
+				return m("tr",
+					[ m('td', {class: previousPeriodClasses}, ""),
+				      m('td', {class: currentPeriodClasses}, ""),
+				      m('td', {class: labelClasses}, 
+				      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
+				      	),
+					])				
+			} else {
+				
+				allComplete = allComplete & (habit['currentPeriod'] == 'complete') // consider only active tasks when assessing completeness
+				
+				return m("tr",
+					[ m('td', {class: previousPeriodClasses, onclick: togglePrevious}, ""),
+				      m('td', {class: currentPeriodClasses, onclick: toggleCurrent, title: hoverText}, currentText),
+				      m('td', {class: labelClasses + " active"}, 
+				      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
+				      	),
+					])				
+			}
+
+
+			
 
 		})
 
