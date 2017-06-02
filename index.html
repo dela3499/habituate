@@ -4,6 +4,7 @@
     <title>Habits</title>
 	<script src="mithril.js"></script>
 	<link rel="stylesheet" type="text/css" href="app.css">
+	<link rel="stylesheet" type="text/css" href="animate.css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
 	<link 
 	rel="stylesheet" 
@@ -306,10 +307,10 @@
 				currentText = m("i", {class: "fa fa-warning big"})
 				hoverText = "Don't skip two days in a row. Make the habit easier if you need, but make sure to do it."
 			} else if (largeCongrats) {
-				currentText = m("i", {class: "fa fa-thumbs-up big"})
+				currentText = m("i", {class: "fa fa-thumbs-up big animated fadeOut"})
 				hoverText = "Nice! You skipped yesterday, but now you're back on the horse. :)"
 			} else if (smallCongrats) {
-				currentText = m("i", {class: "fa fa-thumbs-up"})
+				currentText = m("i", {class: "fa fa-thumbs-up animated fadeOut"})
 			}
 
 			var inactive = habit['title'] == ""
@@ -345,7 +346,7 @@
 
 			if (inactive) {
 				return m("tr",
-					[ m('td', {class: previousPeriodClasses}, ""),
+					[ m('td', {class: previousPeriodClasses, title: ""}, ""),
 				      m('td', {class: currentPeriodClasses}, ""),
 				      m('td', {class: labelClasses}, 
 				      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
@@ -356,8 +357,8 @@
 				allComplete = allComplete & (habit['currentPeriod'] == 'complete') // consider only active tasks when assessing completeness
 				
 				return m("tr",
-					[ m('td', {class: previousPeriodClasses, onclick: togglePrevious}, ""),
-				      m('td', {class: currentPeriodClasses, onclick: toggleCurrent, title: hoverText}, currentText),
+					[ m('td', {class: previousPeriodClasses + " active", onclick: togglePrevious}, ""),
+				      m('td', {class: currentPeriodClasses + " active", onclick: toggleCurrent, title: hoverText}, currentText),
 				      m('td', {class: labelClasses + " active"}, 
 				      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
 				      	),

@@ -152,7 +152,6 @@ th {
 
 .currentPeriod.active:hover, .previousPeriod.active:hover {
 	opacity: 0.4;
-	color: black;
 }
 
 .complete.currentPeriod {
@@ -162,6 +161,7 @@ th {
 
 .incomplete.previousPeriod:hover, .incomplete.currentPeriod:hover {
 	background: rgba(0,0,0,0.2);
+	color: rgba(0,0,0,0.6);
 }
 
 .complete.habit-title {
