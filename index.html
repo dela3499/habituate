@@ -46,67 +46,79 @@
 	defaultViewModel = {
 		"daily": {
 			"currentPeriodTitle": "Th 6/1",
+			"currentPeriod": "",
 			"previousPeriodTitle": "W 5/31",
+			"previousPeriod": "",
 			"habits": {
 				0: {
 					"id": 0,
 					"title": "start walking by 6am",
 					"currentPeriod": "complete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				1: {
 					"id": 1,
 					"title": "meditate 10m",
 					"currentPeriod": "complete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				2: {
 					"id": 2,
 					"title": "business ideas 10m",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				3: {
 					"id": 3,
 					"title": "read 10m",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				4: {
 					"id": 4,
 					"title": "ship new product",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				5: {
 					"id": 5,
 					"title": "newsletter",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				6: {
 					"id": 6,
 					"title": "workout/stretch 10m",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				7: {
 					"id": 7,
 					"title": "todos 10m",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				},
 				8: {
 					"id": 8,
 					"title": "ship bioage",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "incomplete"
+					"previousPeriod": "incomplete",
+					"periods": {}
 				},
 				9: {
 					"id": 9,
 					"title": "in bed by 11pm",
 					"currentPeriod": "incomplete",
-					"previousPeriod": "complete"
+					"previousPeriod": "complete",
+					"periods": {}
 				}
 			}
 		}
@@ -170,12 +182,23 @@
 					habitType: 'daily', 
 					habitID: habitID,
 					period: 'currentPeriod'})
-			}			
+			}
+
+			function updateHabitTitle(input) {
+				update({
+					action: "setHabitTitle",
+					habitType: 'daily',
+					habitID: habitID,
+					text: input.target.value
+				})
+			}
 
 			return m("tr",
 				[ m('td', {class: previousPeriodClasses, onclick: togglePrevious}, ""),
 			      m('td', {class: currentPeriodClasses, onclick: toggleCurrent, title: hoverText}, currentText),
-			      m('td', {class: labelClasses}, habit['title']),
+			      m('td', {class: labelClasses}, 
+			      	m('input', {value: habit['title'], oninput: updateHabitTitle, placeholder: "enter habit here"})
+			      	),
 				])
 
 		})
@@ -188,7 +211,6 @@
 		)
 	}
 
-
 	function toggle(x) {
 		if (x == "complete") {
 			return "incomplete"
@@ -198,32 +220,95 @@
 	}
 
 	function update(action) {
+
+		viewModel = JSON.parse(localStorage.getItem('habituate'))
+
 		if (action['action'] == 'toggleComplete') {
 			habitType = action['habitType']
 			habitID = action['habitID']
 			period = action['period']
 			viewModel[habitType]['habits'][habitID][period] = toggle(viewModel[habitType]['habits'][habitID][period])
+
+			periodName = viewModel[habitType][period]
+			viewModel[habitType]['habits'][habitID]["periods"][periodName] = viewModel[habitType]['habits'][habitID][period]
+
+		} else if (action['action'] == 'setHabitTitle') {
+			habitType = action['habitType']
+			habitID = action['habitID']
+			text = action['text']
+			viewModel[habitType]['habits'][habitID]['title'] = text
 		}
+		localStorage.setItem('habituate', JSON.stringify(viewModel));
 		render()
 	}
 
+	function shiftDate(date, nDays) {
+		return new Date(new Date().setDate(date.getDate() + nDays))
+	}
 
-	var root = document.getElementById("all-habits")
-	// var model = JSON.parse(localStorage.getItem('habituate'))
-	var viewModel = defaultViewModel
-	m.render(root, viewSection(viewModel['daily']))
+	function getDayString(dateString) {
+		date = new Date(dateString)
+		dayOfWeek = ['Su','M','Tu','W','Th','F','Sa'][date.getDay()]
+		month = date.getMonth() + 1
+		dayOfMonth = date.getDate()
+
+		return dayOfWeek + " " + month.toString() + "/" + dayOfMonth.toString()
+	}
+
+	function init() {
+		// prepare localstorage
+		var model = JSON.parse(localStorage.getItem('habituate'))
+		if (!model) {
+			console.log("setting default model")
+			model = defaultViewModel
+			// localStorage.setItem('habituate', JSON.stringify(defaultViewModel));
+		}
+
+		var todayDate = shiftDate(new Date(), 10)
+		var today = todayDate.toDateString()
+		var yesterdayDate = shiftDate(todayDate, -1)
+		var yesterday = yesterdayDate.toDateString()
+
+		// check if today & yesterday are present in daily habits
+		var dummy = [0,1,2,3,4,5,6,7,8,9].map(function(habitID) {
+
+			todaysHabitStatus = model['daily']['habits'][habitID]['periods'][today]
+			console.log(todaysHabitStatus)
+			yesterdaysHabitStatus = model['daily']['habits'][habitID]['periods'][yesterday]
+			if (!todaysHabitStatus) {
+				model['daily']['habits'][habitID]['periods'][today] = "incomplete"
+			}
+			if (!yesterdaysHabitStatus) {
+				model['daily']['habits'][habitID]['periods'][yesterday] = "complete"
+			}
+			model['daily']['habits'][habitID]["previousPeriod"] = model['daily']['habits'][habitID]['periods'][yesterday]
+			model['daily']['habits'][habitID]["currentPeriod"] = model['daily']['habits'][habitID]['periods'][today]
+			
+			model['daily']['currentPeriod'] = today
+			model['daily']['previousPeriod'] = yesterday
+
+			model['daily']['currentPeriodTitle'] = getDayString(today)
+			model['daily']['previousPeriodTitle'] = getDayString(yesterday)
+		})
+
+		localStorage.setItem('habituate', JSON.stringify(model));
+	}
+
+	// localStorage.clear('habituate')
 
 	function render() {
 		var root = document.getElementById("all-habits")
-		// var model = JSON.parse(localStorage.getItem('habituate'))
-		var model = viewModel
+		var model = JSON.parse(localStorage.getItem('habituate'))
 		m.render(root, viewSection(model['daily']))
 	}
 
-	// render()
+	init()
+	render()
 
 
 
 </script>
 
 </html>
+
+<!-- regularly update time, i guess. Not just on startup.  -->
